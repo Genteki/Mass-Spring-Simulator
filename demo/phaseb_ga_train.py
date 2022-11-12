@@ -4,7 +4,6 @@ sys.path.append(os.getcwd())
 import numpy as np
 from physics import *
 from robot import *
-from entity import *
 from evolution.ga import GA
 from datetime import datetime
 
