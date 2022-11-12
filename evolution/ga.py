@@ -12,7 +12,7 @@ class GA:
         self.weight_distance = 1.
         self.weight_drift = -0.1
         self.evolve_rate = np.array([0.95, 0.04, 0.01])  # crossover, mutation
-        self.select_pressure = 1
+        self.select_pressure = 0.03
         # simulation parameters
         self.robot_shape = [2,1,1]
         self.robot = []
