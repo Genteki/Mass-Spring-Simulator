@@ -8,7 +8,7 @@ from entity import *
 from ursina import *
 from evolution.ga import GA
 
-ga = GA(k_spring=500, omega=2, l0_amplitude=0.5, p0_range=0.1, friction=0.7, robot_shape = [8,1,1], m=4)
+ga = GA(k_spring=500, omega=2, l0_amplitude=0.5, p0_range=0.1, friction=0.7, robot_shape = [6,1,1], m=4)
 robot = CubeRobot(ga.robot_shape[0], ga.robot_shape[1], ga.robot_shape[2], m=ga.m)
 print(ga.spring_params.shape)
 for i in range(len(robot.spring)):

@@ -12,7 +12,7 @@ class GA:
         self.weight_distance = 1.
         self.weight_drift = -0.1
         self.evolve_rate = np.array([0.95, 0.04, 0.01])  # crossover, mutation
-        self.select_pressure = 0.03
+        self.select_pressure = 1
         # simulation parameters
         self.robot_shape = [2,1,1]
         self.robot = []
@@ -79,7 +79,7 @@ class GA:
         return parent
 
     def _mutate_point(self, spring_param):
-        p = np.random.randint(low=0, high=len(parent1), size=1)
+        p = np.random.randint(low=0, high=len(spring_param), size=1)
         spring_param[p, 0] = np.random.rand() *  self.l0_amplitude# b
         spring_param[p, 1] = np.random.rand() * 2 * np.pi * self.p0_range # t0
         spring_param[p, 2] = np.random.rand() * self.k_spring # k
