@@ -57,7 +57,6 @@ class GA:
         init_postion = robot.get_center()
         while self.sim.t < sim_t:
              self.sim.simulate()
-             print(self.sim.t)
         final_position = robot.get_center()
         displacement = final_position - init_postion
         return displacement
