@@ -30,7 +30,7 @@ class GA:
         tmp_robot = CubeRobot(self.robot_shape[0], self.robot_shape[1], self.robot_shape[2])
         self.num_spring = len(tmp_robot.spring)
         self.spring_params = np.zeros((self.pop_size, self.num_spring, 3)) # k = 1*(1 + b * sin(omega * (t)+t0))
-        self.sim = Simulator(dt=1/2400, k_ground=1, damping=0.999, friction_ground=self.friction)
+        self.sim = Simulator(dt=1/2400, k_ground=1, damping=0.999, friction_ground=self.friction, friction_s=self.friction)
         # initial spring_params
         for i in range(self.pop_size):
             for j in range(self.num_spring):
