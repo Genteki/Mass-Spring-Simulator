@@ -41,6 +41,10 @@ class GA:
         self.fitness = np.zeros(self.pop_size, dtype=np.float64)
         self.best_fitness = 0.
         self.best_param = None
+        # self._cal_fitness()
+        # self._update_best()
+
+    def cal_fitness(self):
         self._cal_fitness()
         self._update_best()
 
@@ -53,6 +57,7 @@ class GA:
         init_postion = robot.get_center()
         while self.sim.t < sim_t:
              self.sim.simulate()
+             print(self.sim.t)
         final_position = robot.get_center()
         displacement = final_position - init_postion
         return displacement

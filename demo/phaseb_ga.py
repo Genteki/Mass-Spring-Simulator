@@ -10,6 +10,7 @@ from evolution.ga import GA
 from datetime import datetime
 
 ga = GA(k_spring=500, omega=2, l0_amplitude=0.5, p0_range=0.1, friction=0.7, robot_shape = [8,1,1], m=4, sim_t=10, pop_size=200)
+ga.cal_fitness()
 for i in range(100):
     ga.evolve()
     np.save(r"output/phaseb/gen{}.npy".format(i), ga.best_param)
