@@ -30,13 +30,14 @@ class Spring:
         return self.tension
 
 class Simulator:
-    def __init__(self, mass=[], spring=[], g=[0.,0.,-9.8], dt=1/2400, k_ground=1, damping=0.999, friction_ground=0):
+    def __init__(self, mass=[], spring=[], g=[0.,0.,-9.8], dt=1/2400, k_ground=1, damping=0.999, friction_ground=0, friction_s=0):
         self.mass = mass
         self.spring = spring
         self.dt = dt
         self.g = np.array(g, dtype=np.float64)
         self.k_ground = 1e3 * k_ground / dt
         self.friction_ground = friction_ground
+        self.friction_s = friction_s
         self.damping = damping
         self.t = 0
 
@@ -44,7 +45,7 @@ class Simulator:
         self.t = 0
         if len(mass) and len(spring):
             self.mass = mass
-            self.spring = spring   
+            self.spring = spring
 
     def simulate(self):
         # Time increment
@@ -65,7 +66,12 @@ class Simulator:
                 m.f_external[2] += -m.p[2] * self.k_ground
                 # friction to ground
                 if m.f_external[2] > 0 and (m.v[0:2]!=0).any():
-                    m.f_external[0:2] += -m.v[0:2] * m.f_external[2] * self.friction_ground / np.linalg.norm(m.v[0:2],2)
+                    f_h = np.linalg.norm(m.f_external[0:2], ord=2)
+                    if f_h > m.f_external[2] * self.friction_s:
+                        m.f_external[0:2] += -m.v[0:2] * m.f_external[2] * self.friction_ground / np.linalg.norm(m.v[0:2],2)
+                    else:
+                        m.f_external[0] = 0
+                        m.f_external[1] = 0
         # Integration Step
         for m in self.mass:
             m.a = m.f_external / m.m
