@@ -11,8 +11,8 @@ class GA:
         self.pop_size = 200
         self.weight_distance = 1.
         self.weight_drift = -0.1
-        self.evolve_rate = np.array([0.95, 0.04, 0.01])  # crossover, mutation
-        self.select_pressure = 0.03
+        self.evolve_rate = np.array([0.94, 0.04, 0.02])  # crossover, mutation
+        self.select_pressure = 0.04
         # simulation parameters
         self.robot_shape = [2,1,1]
         self.robot = []
@@ -110,7 +110,7 @@ class GA:
             new_pop.append(offspring[i])
         for i in idx_pop:
             new_pop.append(self.spring_params[i])
-        self.pop = np.array(new_pop)
+        self.spring_params = np.array(new_pop)
         self.fitness = np.r_[fn[idx_off], self.fitness[idx_pop]]
 
     def evolve(self):
