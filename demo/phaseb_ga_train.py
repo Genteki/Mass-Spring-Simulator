@@ -10,6 +10,10 @@ from datetime import datetime
 if __name__ == '__main__':
 
     ga = GA(k_spring=500, omega=2, l0_amplitude=0.5, p0_range=0.1, friction=0.7, robot_shape = [6,1,1], m=4, sim_t=8, pop_size=150)
+    print("shape: ", ga.robot_shape)
+    print("pop_size: ", ga.pop_size)
+    print("sim_t: ", ga.sim_t)
+    print("select_pressure: ", ga.select_pressure)
     ga.cal_fitness()
 
     for i in range(100):
