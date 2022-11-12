@@ -20,11 +20,11 @@ class CubeRobot():
         # find spring
         for i in range(len(self.mass)):
             for j in range(i+1, len(self.mass)):
-                if np.linalg.norm(self.mass[i].p-self.mass[j].p, ord=2) < np.sqrt(3) + 0.1:
-                    self.spring.append(Spring(self.mass[i],
-                                              self.mass[j],
-                                              np.linalg.norm(self.mass[i].p-self.mass[j].p, ord=2),
-                                              k_spring))
+                if (np.linalg.norm(self.mass[i].p-self.mass[j].p, ord=2) < np.sqrt(3) + 0.1):
+                        self.spring.append(Spring(self.mass[i],
+                                                  self.mass[j],
+                                                  np.linalg.norm(self.mass[i].p-self.mass[j].p, ord=2),
+                                                  k_spring))
         # find face
         self.face = []
         # porint 0

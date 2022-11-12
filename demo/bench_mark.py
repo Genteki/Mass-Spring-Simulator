@@ -15,5 +15,6 @@ t = time.perf_counter()
 ga._simulate_robot(ga.spring_params[0], sim_t=sim_t)
 cost = time.perf_counter() - t
 print("runtime: ", cost)
+print("spring per simulation: ", len(ga.spring_params[0]))
 print("springs calculated: ", len(ga.spring_params[0]) * ga.sim.t / ga.sim.dt)
 print("spring per sec: ", len(ga.spring_params[0]) * sim_t / ga.sim.dt / cost)
