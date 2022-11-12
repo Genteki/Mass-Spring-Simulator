@@ -77,9 +77,18 @@ class GA:
         return parent
 
     def _mutate_point(self, spring_param):
-        spring_param[0] = np.random.rand() *  self.l0_amplitude# b
-        spring_param[1] = np.random.rand() * 2 * np.pi * self.p0_range # t0
-        spring_param[2] = np.random.rand() * self.k_spring # k
+        p = np.random.randint(low=0, high=len(parent1), size=1)
+        spring_param[p, 0] = np.random.rand() *  self.l0_amplitude# b
+        spring_param[p, 1] = np.random.rand() * 2 * np.pi * self.p0_range # t0
+        spring_param[p, 2] = np.random.rand() * self.k_spring # k
+        return spring_param
+
+    def _mutate_segment(self, spring_param):
+        segment = np.random.randint(low=0, high=len(parent1), size=2)
+        for p in range(segment.min(), segment.max()+1):
+            spring_param[p, 0] = np.random.rand() *  self.l0_amplitude# b
+            spring_param[p, 1] = np.random.rand() * 2 * np.pi * self.p0_range # t0
+            spring_param[p, 2] = np.random.rand() * self.k_spring # k
         return spring_param
 
     def _crossover(self, parent1, parent2):
