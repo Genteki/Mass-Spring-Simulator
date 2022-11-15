@@ -36,7 +36,7 @@ class GA:
             for j in range(self.num_spring):
                 self.spring_params[i,j,0] = np.random.rand() *  self.l0_amplitude# b
                 self.spring_params[i,j,1] = np.random.rand() * 2 * np.pi * self.p0_range # t0
-                self.spring_params[i,j,2] = np.random.rand() * self.k_spring # k
+                self.spring_params[i,j,2] = int(np.random.rand() * self.k_spring/200) * 200 # k
 
         self.fitness = np.zeros(self.pop_size, dtype=np.float64)
         self.best_fitness = 0.
@@ -82,7 +82,7 @@ class GA:
         p = np.random.randint(low=0, high=len(spring_param), size=1)
         spring_param[p, 0] = np.random.rand() *  self.l0_amplitude# b
         spring_param[p, 1] = np.random.rand() * 2 * np.pi * self.p0_range # t0
-        spring_param[p, 2] = np.random.rand() * self.k_spring # k
+        spring_param[p, 2] = int(np.random.rand() * self.k_spring/200) * 200  # k
         return spring_param
 
     def _mutate_segment(self, spring_param):
@@ -90,7 +90,7 @@ class GA:
         for p in range(segment.min(), segment.max()+1):
             spring_param[p, 0] = np.random.rand() *  self.l0_amplitude# b
             spring_param[p, 1] = np.random.rand() * 2 * np.pi * self.p0_range # t0
-            spring_param[p, 2] = np.random.rand() * self.k_spring # k
+            spring_param[p, 2] = int(np.random.rand() * self.k_spring/200) * 200 # k # k
         return spring_param
 
     def _crossover(self, parent1, parent2):
