@@ -13,16 +13,16 @@ def rand_k(high, low=30, dk=0.1):
     return int(np.random.rand() * (high-low) / dk) * dk + low
 
 
-class GA:
+class GA_C:
     def __init__(self, **kwargs):
         # evolving parameters
         self.pop_size = 200
         self.weight_distance = 1.
-        self.weight_drift = -0.1
-        self.evolve_rate = np.array([0.92, 0.05, 0.03])  # crossover, mutation
-        self.select_pressure = 0.03
+        self.weight_drift = -0.4
+        self.evolve_rate = np.array([0.94, 0.04, 0.02])  # crossover, mutation
+        self.select_pressure = 0.04
         # simulation parameters
-        self.robot_shape = [2,1,1]
+        self.robot_shape = [3,3,2]
         self.robot = []
         self.friction = 0.8
         self.k_spring = 500
@@ -30,18 +30,19 @@ class GA:
         self.p0_range = 0.5
         self.omega = 1
         self.m = 1
-        self.sim_t = 5
-        self.damping=0.999
+        self.sim_t = 8
+        self.damping=0.9999
         self.k_ground = 1
-        self.fitness_history = []
+        self.dt = 1/2400
+        self.disable_cube = []
 
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-        tmp_robot = CubeRobot(self.robot_shape[0], self.robot_shape[1], self.robot_shape[2])
+        tmp_robot = VariableRobot(self.robot_shape[0], self.robot_shape[1], self.robot_shape[2], disable=self.disable_cube)
         self.num_spring = len(tmp_robot.spring)
         self.spring_params = np.zeros((self.pop_size, self.num_spring, 3)) # k = 1*(1 + b * sin(omega * (t)+t0))
-        self.sim = Simulator(dt=1/2400, k_ground=self.k_ground, damping=self.damping, friction_ground=self.friction, friction_s=self.friction)
+        self.sim = Simulator(dt=self.dt, k_ground=self.k_ground, damping=self.damping, friction_ground=self.friction, friction_s=self.friction)
         # initialize spring_params
         for i in range(self.pop_size):
             for j in range(self.num_spring):
@@ -50,6 +51,9 @@ class GA:
                 self.spring_params[i,j,2] = rand_k(self.k_spring) # k
 
         self.fitness = np.zeros(self.pop_size, dtype=np.float64)
+        self.speed = np.zeros(self.pop_size, dtype=np.float64)
+        self.fitness_history = []
+        self.speed_history = []
         self.best_fitness = 0.
         self.best_param = None
         # self._cal_fitness()
@@ -58,10 +62,9 @@ class GA:
     def cal_fitness(self):
         self._cal_fitness()
         self._update_best()
-        self.fitness_history.append(self.fitness)
 
     def _simulate_robot(self, spring_param, sim_t=0):
-        robot = CubeRobot(self.robot_shape[0], self.robot_shape[1], self.robot_shape[2])
+        robot = VariableRobot(self.robot_shape[0], self.robot_shape[1], self.robot_shape[2], disable=self.disable_cube)
         robot.set_spring_param(spring_param)
         self.sim.reset(robot.mass, robot.spring)
         if sim_t == 0: sim_t = self.sim_t
@@ -76,10 +79,14 @@ class GA:
     def _cal_fitness(self):
         for i, spring_param in enumerate(self.spring_params):
             displacement = self._simulate_robot(spring_param)
-            self.fitness[i] = self.weight_distance * displacement[0] + self.weight_drift * displacement[1]
+            self.fitness[i] = (self.weight_distance * displacement[0] + self.weight_drift * displacement[1])/self.sim_t
+            self.speed[i] = np.sqrt(displacement[0]*displacement[0]+displacement[1]*displacement[1])/self.sim_t
             # sys.stdout.write("*")
 
     def _update_best(self):
+        self.fitness_history.append(self.fitness)
+        self.speed_history.append(self.speed)
+        print(self.fitness.max())
         if self.best_fitness <= self.fitness.max():
             self.best_fitness = self.fitness.max()
             self.best_param = self.spring_params[np.argmax(self.fitness)]
@@ -112,9 +119,11 @@ class GA:
 
     def _cut_off(self, offspring, last_size=10):
         fn = np.ones(len(offspring))
+        sn = np.ones(len(offspring))
         for i in range(len(offspring)):
             off_displacement = self._simulate_robot(offspring[i])
             fn[i] = self.weight_distance * off_displacement[0] + self.weight_drift * off_displacement[1]
+            sn[i] = np.sqrt(off_displacement[0]*off_displacement[0]+ off_displacement[1]*off_displacement[1])
         idx_off = fn.argsort()[::-1][0:self.pop_size-last_size]
         idx_pop = self.fitness.argsort()[::-1][0:last_size]
         new_pop = []
@@ -124,6 +133,7 @@ class GA:
             new_pop.append(self.spring_params[i])
         self.spring_params = np.array(new_pop)
         self.fitness = np.r_[fn[idx_off], self.fitness[idx_pop]]
+        self.speed  = np.r_[sn[idx_off], self.speed[idx_pop]]
 
     def evolve(self):
         offspring = np.zeros_like(self.spring_params)
@@ -138,7 +148,7 @@ class GA:
             elif p < self.evolve_rate[0:2].sum():      # point mutate
                 parent = self._mutate_point(parent) # point mutate
             elif p < self.evolve_rate[0:3].sum():      # partial mutate
-                parent = self._mutate_segment(parent)                            # segment mutate
+                pass                                # segment mutate
             offspring[i] = parent
         self._cut_off(offspring)
         self._update_best()
@@ -147,6 +157,6 @@ class GA:
         return self.best_param
 
     def get_best_robot(self):
-        robot = CubeRobot(self.robot_shape[0], self.robot_shape[1], self.robot_shape[2])
+        robot = VariableRobot(self.robot_shape[0], self.robot_shape[1], self.robot_shape[2], disable=self.disable_cube)
         robot.set_spring_param(self.best_param)
         return robot

@@ -1,0 +1,7 @@
+
+CUBETYPE = "reptile1"
+mkdir output/phasec
+mkdir output/phasec/reptile1
+mkdir output/phasec/reptile1/best
+mkdir output/phasec/reptile1/learningcurve
+python demo/phasec_train.py reptile1 1
