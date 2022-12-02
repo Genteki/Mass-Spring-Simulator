@@ -12,7 +12,7 @@ from phasec_disable import disable_param_332
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        pk = 'ori'
+        pk = 'try'
     else:
         pk = sys.argv[1]
     robot = VariableRobot(x=3,y=3,z=2,k_spring=10000, disable=disable_param_332[pk])

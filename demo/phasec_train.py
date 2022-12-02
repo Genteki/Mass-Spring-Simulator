@@ -19,8 +19,8 @@ if __name__ == '__main__':
         sim_t=.1; pops=100
     else:
         sim_t=8; pops=150
-    ga = GA_C(k_spring=1200, omega=2, l0_amplitude=0.5, p0_range=0.3,
-              friction=0.8, robot_shape = [3,3,2], m=1, sim_t=sim_t,
+    ga = GA_C(k_spring=1200, omega=3, l0_amplitude=0.5, p0_range=0.1,
+              friction=0.7, robot_shape = [3,3,2], m=1, sim_t=sim_t,
               pop_size=pops, dt=1/1200, disable_cube=disable_param_332[cube_type])
     print("shape: ", ga.robot_shape)
     print("pop_size: ", ga.pop_size)

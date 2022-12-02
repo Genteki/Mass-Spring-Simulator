@@ -68,10 +68,11 @@ class GA_C:
         robot.set_spring_param(spring_param)
         self.sim.reset(robot.mass, robot.spring)
         if sim_t == 0: sim_t = self.sim_t
-
         init_postion = robot.get_center()
         while self.sim.t < sim_t:
-             self.sim.simulate()
+            for j, s in enumerate(self.sim.spring):
+                s.l0 = s.l00 * (1 + spring_param[j,0] * np.sin(self.omega*self.sim.t+spring_param[j,1]))
+            self.sim.simulate()
         final_position = robot.get_center()
         displacement = final_position - init_postion
         return displacement

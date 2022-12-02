@@ -7,14 +7,13 @@ from robot import *
 from entity import *
 from ursina import *
 from evolution import *
+from phasec_disable import *
 
 
 if __name__ == '__main__':
-    if sys.argc == 0:
-
-    ga = GA_C(k_spring=500, omega=2, l0_amplitude=0.5, p0_range=0.1,
-               friction=0.7, robot_shape = [3,3,2], m=1, pop_size=150)
-    robot = VariableRobot(ga.robot_shape[0], ga.robot_shape[1], ga.robot_shape[2], m=ga.m)
+    ga = GA_C(k_spring=500, omega=3, l0_amplitude=0.5, p0_range=0.1,
+               friction=0.7, robot_shape = [3,3,2], dt=1/1200, m=1, pop_size=150,sim_t=0,disable_cube=disable_param_332['h'])
+    robot = VariableRobot(ga.robot_shape[0], ga.robot_shape[1], ga.robot_shape[2], disable=ga.disable_cube)
     print(ga.spring_params.shape)
     for i in range(len(robot.spring)):
         robot.spring[i].k = ga.spring_params[0,i,2]
